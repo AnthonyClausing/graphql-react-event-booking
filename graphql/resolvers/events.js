@@ -1,8 +1,11 @@
 const Event = require('../../models/event');
+const User = require('../../models/user');
 
 const { dateToString } = require('../../helpers/date');
 const { transformEvent } = require('./merge');
 
+/*with resolvers you have access to the request object as the second argument 
+which we can use while creating an event to see if a user is authenticated */
 module.exports = {
   events: async () => {
     try{
@@ -12,19 +15,22 @@ module.exports = {
         throw err;
     }
   },
-  createEvent: async (args) => {
+  createEvent: async (args,req) => {
+    if(!req.isAuth){
+      throw new Error('Unauthenticated');
+    }
     const event = new Event({
       title: args.eventInput.title,
       description: args.eventInput.description,
       price: +args.eventInput.price,
       date: dateToString(args.eventInput.date),
-      creator: "5c423a1ad4af041b9c762201"
+      creator: req.userId
     })
     let createdEvent;
     try{
       const result = await event.save();
       createdEvent = transformEvent(result);
-      const creator = await User.findById('5c423a1ad4af041b9c762201');
+      const creator = await User.findById(req.userId);
 
       if(!creator) {
         throw new Error('User not found.');

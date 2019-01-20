@@ -1,7 +1,12 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../../models/user');
 
+
+/*the error messages in login would be 'incorrect crendentials' or something in prod
+but for the sake of potentially easy debugging they'll be like clearly separate*/
+// second argument of jwt.sign is a string that is used as a key to hash token
 module.exports = { 
   createUser: async (args) => {
     try{
@@ -19,5 +24,19 @@ module.exports = {
     }catch(err){
       throw err;
     }
+  },
+  login: async (args) => {
+    const user = await User.findOne({ email: args.email });
+    if(!user){
+      throw new Error('User does not exist.'); 
+    }
+    const isEqual = await bcrypt.compare(args.password, user.password);
+    if(!isEqual){
+      throw new Error('Password is incorrect.')
+    }
+    const token = jwt.sign({userId: user.id, email: user.email}, 'somesecretkey',{
+      expiresIn: '1h'
+    });
+    return {userId: user.id, token, tokenExpiration: 1}
   }
 }
