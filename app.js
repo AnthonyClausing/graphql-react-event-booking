@@ -11,6 +11,16 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if(req.method === 'OPTIONS'){
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(isAuth);
 // Good thing about graphql is that you can tell the backend exactly what you want in your query from the frontend
 // Adding ! after a type makes it not optional (not null)
@@ -26,7 +36,7 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${
 }@cluster0-vcaax.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`
 )
 .then(() => {
-  app.listen(3000);
+  app.listen(9000);
 })
 .catch(err => {
   console.log(err);

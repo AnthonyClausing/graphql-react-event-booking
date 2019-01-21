@@ -32,6 +32,7 @@ type AuthData {
   token: String!
   tokenExpiration: Int!  
 }
+
 input EventInput {
   title: String!
   description: String!
