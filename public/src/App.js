@@ -25,7 +25,7 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div id="whole-page">
+        <React.Fragment>
           <AuthContext.Provider value={{
             token: this.state.token, 
             userId: this.state.userId, 
@@ -44,7 +44,7 @@ class App extends Component {
               </Switch>
             </main>
           </AuthContext.Provider>
-        </div>
+        </React.Fragment>
       </BrowserRouter>
     );
   }

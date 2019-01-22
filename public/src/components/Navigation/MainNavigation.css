@@ -35,7 +35,7 @@
 .main-navigation__items button{
   text-decoration: none;
   color: #000;
-  border: none;
+  border: white;
   font: inherit;
   background: transparent;
   cursor: pointer;
