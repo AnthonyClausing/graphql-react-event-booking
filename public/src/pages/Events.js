@@ -172,7 +172,7 @@ class EventsPage extends Component{
           </div>
         )}
         <ul className="events__list">
-          {this.state.events.length && eventList}
+          {this.state.events.length ? eventList : null}
         </ul>
       </React.Fragment>
     );
