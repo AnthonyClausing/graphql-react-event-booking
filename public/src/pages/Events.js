@@ -53,10 +53,6 @@ class EventsPage extends Component{
             description
             price
             date
-            creator {
-              _id
-              email
-            }
           }
         }
       `
@@ -72,14 +68,25 @@ class EventsPage extends Component{
         'Authorization': 'Bearer ' + token
       }
     })
-    .then( res =>{
+    .then(res =>{
       if(res.status !== 200 && res.status !== 201){
         throw new Error('Failed');
       }
       return res.json();
     })
-    .then( resData => {
-      this.fetchEvents();
+    .then(resData => {
+      this.setState(prevState =>{
+        const newEvent = {
+          _id:  resData.data.createEvent._id,
+          title: resData.data.createEvent.title,
+          description:  resData.data.createEvent.description,
+          price:  resData.data.createEvent.price,
+          creator: {
+            _id: this.context.userId
+          } 
+        }
+        return {events: [...prevState.events, newEvent]};
+      });
       this.modalCancel();
     })
     .catch(err =>{
