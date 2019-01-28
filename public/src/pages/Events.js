@@ -127,6 +127,41 @@ class EventsPage extends Component{
     });
   }
 
+  bookEventHandler = () => {
+    const requestBody = {
+      query: `
+        mutation {
+          bookEvent(eventId: "${this.state.selectedEvent._id}") {
+            _id
+            createdAt
+            updatedAt
+          }
+        }
+      `
+    };
+
+    fetch('http://localhost:9000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':'Bearer ' + this.context.token 
+      }
+    })
+    .then( res =>{
+      if(res.status !== 200 && res.status !== 201){
+        throw new Error('Failed');
+      }
+      return res.json();
+    })
+    .then( resData => {
+      console.log(resData)
+    })
+    .catch(err =>{
+      console.log(err);
+    });
+  }
+
   render(){
     const eventList = this.state.events.map( event => {
       return (
