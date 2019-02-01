@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Spinner from '../components/Spinner/Spinner';
 import AuthContext from '../context/auth-context';
-
+import BookingList from '../components/Bookings/BookingsList/BookingList';
 class BookingsPage extends Component{
   state = {
     isLoading: false,
@@ -55,7 +55,48 @@ class BookingsPage extends Component{
       console.log(err);
       this.setState({isLoading: false});
     });
-  } 
+  }
+
+  deleteBookingHandler = bookingId => {
+    this.setState({isLoading: true})
+    const requestBody = {
+      query: `
+        mutation {
+          cancelBooking(bookingId: "${bookingId}") {
+            _id
+            title
+          }
+        }
+      `
+    };
+
+    fetch('http://localhost:9000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type' : 'application/json',
+        'Authorization':'Bearer ' + this.context.token
+      }
+    })
+    .then( res =>{
+      if(res.status !== 200 && res.status !== 201){
+        throw new Error('Failed');
+      }
+      return res.json();
+    })
+    .then( resData => {
+      this.setState(prevState => {
+        const updatedBookings = prevState.bookings.filter(booking => {
+          return booking._id !== bookingId
+        });
+        return {bookings: updatedBookings, isLoading: false}
+      });
+    })
+    .catch(err =>{
+      console.log(err);
+      this.setState({isLoading: false});
+    });
+  }
 
   render(){
     return (
@@ -63,13 +104,7 @@ class BookingsPage extends Component{
       {this.state.isLoading ? (
       <Spinner />
       ) : (
-        <ul>
-          {this.state.bookings.map(b => (
-            <li key={b._id}>
-              {b.event.title} - {new Date(b.createdAt).toLocaleDateString()}
-            </li>
-          ))}
-        </ul>
+        <BookingList onDelete={this.deleteBookingHandler} bookings={this.state.bookings}/>
       )}
     </React.Fragment>)
   }
