@@ -4,6 +4,7 @@ import Spinner from '../components/Spinner/Spinner';
 import AuthContext from '../context/auth-context';
 import BookingList from '../components/Bookings/BookingsList/BookingList';
 import BookingsChart from '../components/Bookings/BookingsChart/BookingsChart';
+import BookingsControls from '../components/Bookings/BookingsControls/BookingsControls'; 
 class BookingsPage extends Component{
   state = {
     isLoading: false,
@@ -117,14 +118,7 @@ class BookingsPage extends Component{
     if(!this.state.isLoading){
       content = (
         <React.Fragment>
-          <div>
-            <button onClick={this.changeOutputTypeHandler.bind(this,'list')}>
-              List
-            </button>
-            <button onClick={this.changeOutputTypeHandler.bind(this,'chart')}>
-              Chart
-            </button>
-          </div>
+          <BookingsControls activeOutputType={this.state.outputType} onChange={this.changeOutputTypeHandler} />
           <div>
             {
               this.state.outputType === 'list' 
