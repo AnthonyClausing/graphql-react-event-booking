@@ -51,7 +51,7 @@ class EventsPage extends Component{
 
     const requestBody = {
       query: `
-        mutation CreateEvent(title: String!, desc: String!, price: Float!, date: String!) {
+        mutation CreateEvent($title: String!, $desc: String!, $price: Float!, $date: String!) {
           createEvent(eventInput: {title: $title, description: $desc, price: $price, date: $date}){
             _id
             title
@@ -165,7 +165,7 @@ class EventsPage extends Component{
     }
     const requestBody = {
       query: `
-        mutation BookEvent(id: ID!){
+        mutation BookEvent($id: ID!){
           bookEvent(eventId: $id) {
             _id
             createdAt
