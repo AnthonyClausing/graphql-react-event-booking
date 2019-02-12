@@ -29,9 +29,10 @@ class AuthPage extends Component{
     if(!email.trim().length|| !password.trim().length){
       return;
     }
+    
     let requestBody = {
       query : `
-        query Login(email: String!, password: String!){
+        query Login($email: String!, $password: String!){
           login(email: $email, password: $password){
             userId
             token
@@ -47,7 +48,7 @@ class AuthPage extends Component{
     if (!this.state.isLogIn) {
       requestBody = {
         query: `
-          mutation CreateUser(email: String!, password: String!) {
+          mutation CreateUser($email: String!, $password: String!) {
             createUser(userInput: {email: $email, password: $password}){
               _id
               email
@@ -60,6 +61,7 @@ class AuthPage extends Component{
         }
       };
     }
+    console.log(email, password, requestBody)
 
     fetch('http://localhost:9000/graphql', {
       method: 'POST',
