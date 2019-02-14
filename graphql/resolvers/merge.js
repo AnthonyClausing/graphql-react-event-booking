@@ -18,6 +18,11 @@ const userLoader = new DataLoader((userIds) => {
 const events = async eventIds => {
   try {
   const events = await Event.find({_id: {$in: eventIds}})
+  /*Sort is used because mongo doesnt guarantee the order of the data received, 
+  and produce a difficult to reproduce bug*/
+  events.sort((a,b) => {
+    return eventIds.indexOf(a._id.toString()) - eventIds.indexOf(b._id.toString())
+  })
   return events.map(event => transformEvent(event));
   } catch(err) {
     throw err;
